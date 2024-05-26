@@ -40,7 +40,7 @@ class ToroidalCoords(EMCoords):
         self._cns_lookup_table = combinatorial_number_system_table(
             n_landmarks, simplicial_complex_dimension
         )
-
+        self.harm_reps = None
     def get_coordinates(
         self,
         perc=0.5,
@@ -183,7 +183,7 @@ class ToroidalCoords(EMCoords):
             for cocycle in integer_cocycles_as_vectors
         ]
         harm_reps, _ = zip(*harm_reps_and_integrals)
-
+        self.harm_reps = harm_reps_and_integrals
         # compute circular coordinates on data points
         circ_coords = [
             _sparse_integrate(
@@ -299,7 +299,6 @@ def _sparse_integrate(
                     theta_matrix[i, j] = harm_rep[index]
 
     _cocycle_to_matrix(dist_mat, threshold, lookup_table, n_points, theta_matrix)
-
     class_map = integral[membership_function].copy()
     for i in range(class_map.shape[0]):
         class_map[i] += theta_matrix[membership_function[i], :].dot(part_unity[:, i])

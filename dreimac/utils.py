@@ -627,6 +627,22 @@ class CohomologyUtils:
             (values[:n_entries], (rows[:n_entries], columns[:n_entries])),
             shape=(n_actual_three_simplices, n_faces),
         )
+    @staticmethod
+    def one_cocycle_to_matrix(
+        dist_mat: np.ndarray,
+        threshold: float,
+        lookup_table: np.ndarray,
+        n_points: int,
+        cocycle_as_vector: np.ndarray,
+    ):
+
+        theta_matrix = np.zeros((n_points, n_points))
+        for i in range(n_points):
+            for j in range(i + 1, n_points):
+                if dist_mat[i, j] < threshold:
+                    index = combinatorial_number_system_d1_forward(i, j, lookup_table)
+                    theta_matrix[i, j] = cocycle_as_vector[index]
+        return theta_matrix
 
 
 class PartUnity:
