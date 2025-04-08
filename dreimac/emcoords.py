@@ -92,7 +92,17 @@ class EMCoords(object):
         Compute the representative cocycle, given a list of cohomology classes
 
         Parameters
-        ----------
+        ----------        # varphi_j(b) = phi_j(b)/(phi_1(b) + ... + phi_{n_landmarks}(b))
+        denom = np.sum(phi, 0)
+        nzero = np.sum(denom == 0)
+        if nzero > 0:
+            warnings.warn("There are {} point not covered by a landmark".format(nzero))
+            denom[denom == 0] = 1
+        varphi = phi / denom[None, :]
+        # To each data point, associate the index of the first open set it belongs to
+        ball_indx = np.argmax(U, 0)
+        return varphi, ball_indx
+
         cohomology_class : integer
             Integer representing the index of the persistent cohomology class.
             Persistent cohomology classes are ordered by persistence, from largest to smallest.
@@ -176,7 +186,7 @@ class EMCoords(object):
         if X_query is None:
             dist_land_data = self._dist_land_data
         else: # calculate the distance between the landmarks and the query
-            dist_land_data = cdist(self.X_[self.idx_land_], X_query)
+            dist_land_data = cdist(self._X[self._idx_land], X_query)
         U = dist_land_data < r_cover
         phi = np.zeros_like(dist_land_data)
         phi[U] = partunity_fn(dist_land_data[U], r_cover)
