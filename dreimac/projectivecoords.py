@@ -38,18 +38,25 @@ class ProjectiveCoords(EMCoords):
 
     def get_coordinates(
         self,
+        X_query=None,
+        distance_matrix_query=False,
         perc=0.9,
         cocycle_idx=0,
         proj_dim=2,
         partunity_fn=PartUnity.linear,
         standard_range=True,
         projective_dim_red_mode="exponential",
+        
     ):
         """
         Get real projective coordinates.
 
         Parameters
         ----------
+        X_query: ndarray(M, d) or None
+            A point cloud to compute the toroidal coordinates on. If None, uses self.X.
+        distance_matrix_query: boolean
+            If true, treat X_query as the distances of landmarks to the query point cloud        
         perc : float
             Percent coverage. Must be between 0 and 1.
         cocycle_idx : list
@@ -67,14 +74,15 @@ class ProjectiveCoords(EMCoords):
             Either "one-by-one", "exponential", or "direct". How to perform equivariant
             dimensionality reduction. "exponential" usually works best, being fast
             without compromising quality.
-
+        X_query: ndarray(M, d)
+            A point cloud to compute the projective coordinates on. If None, uses self.X.
         Returns
         -------
         ndarray(N, proj_dim+1)
             The projective coordinates
 
         """
-
+        
         n_landmarks = self._n_landmarks
 
         homological_dimension = 1
@@ -86,7 +94,7 @@ class ProjectiveCoords(EMCoords):
             self, perc, cohomdeath_rips, cohombirth_rips, standard_range
         )
 
-        varphi, ball_indx = EMCoords.get_covering_partition(self, r_cover, partunity_fn)
+        varphi, ball_indx = EMCoords.get_covering_partition(self, r_cover, partunity_fn, X_query, distance_matrix_query)
 
         root_of_unity = -1
 
