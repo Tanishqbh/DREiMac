@@ -107,6 +107,8 @@ class ProjectiveCoords(EMCoords):
         epca = EquivariantPCA.ppca(
             class_map, proj_dim, projective_dim_red_mode, self.verbose
         )
-        self._variance = epca["variance"]
+        if X_query is None:
+            ## Only update the variance if there is no query
+            self._variance = epca["variance"] 
 
         return epca["X"]
