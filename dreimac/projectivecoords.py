@@ -94,7 +94,7 @@ class ProjectiveCoords(EMCoords):
             self, perc, cohomdeath_rips, cohombirth_rips, standard_range
         )
 
-        varphi, ball_indx = EMCoords.get_covering_partition(self, r_cover, partunity_fn, X_query, distance_matrix_query)
+        varphi, ball_indx = EMCoords.get_covering_partition(self, r_cover, partunity_fn, None, False)
 
         root_of_unity = -1
 
@@ -104,11 +104,19 @@ class ProjectiveCoords(EMCoords):
 
         class_map = np.sqrt(varphi.T) * cocycle_matrix[ball_indx[:], :]
 
-        epca = EquivariantPCA.ppca(
-            class_map, proj_dim, projective_dim_red_mode, self.verbose
-        )
+  
         if X_query is None:
             ## Only update the variance if there is no query
-            self._variance = epca["variance"] 
+            epca = EquivariantPCA.ppca(
+            class_map, proj_dim, projective_dim_red_mode, self.verbose
+        )    
+            self._variance = epca["variance"]
+        else:
+
+            varphi, ball_indx = EMCoords.get_covering_partition(self, r_cover, partunity_fn, X_query, distance_matrix_query)             
+            query_class_map = np.sqrt(varphi.T) * cocycle_matrix[ball_indx[:], :]
+            epca = EquivariantPCA.ppca_query(
+                class_map, query_class_map, proj_dim, projective_dim_red_mode, self.verbose
+                )
 
         return epca["X"]

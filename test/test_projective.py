@@ -51,13 +51,11 @@ class TestRealProjective:
         coordinates = pc.get_coordinates()
         assert len(coordinates) == len(X)
         
-        indices = np.random.randint(low=0, high=X.shape[0], size=(20,)).astype(int)
-        X_query = D[pc._idx_land,:][:,np.append(np.arange(X.shape[0]),indices)]
+        indices = np.random.randint(low=0, high=X.shape[0], size=(40,)).astype(int)
+        X_query = D[pc._idx_land, :][:, indices]
         
         coords_query = pc.get_coordinates(X_query=X_query, distance_matrix_query=True)
-        target_coordinates = 2
-        csm_mat = GeometryUtils.get_csm_projarc(coordinates[indices],coords_query[-len(indices):])
-        assert np.allclose(0,np.diag(csm_mat))
+        assert np.allclose(coords_query, coordinates[indices])
 
 
     def test_klein_bottle(self):

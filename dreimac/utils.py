@@ -795,7 +795,73 @@ class EquivariantPCA:
 
         # Return the variance and the projective coordinates
         return {"variance": variance, "X": XRet.T}
+    def ppca_query(og_class_map, query_class_map,  proj_dim, projective_dim_red_mode="one-by-one" , verbose=False):
+        n_dim = og_class_map.shape[1]
+       
+        X = og_class_map.T
+        Z = query_class_map.T
+        variance = np.zeros(X.shape[0] - 1)
 
+        assert projective_dim_red_mode in ["direct", "exponential", "one-by-one"]
+
+        def _one_step_linear_reduction(X, Z, dims_to_keep):
+            try:
+                _, U = np.linalg.eigh(X.dot(np.conjugate(X).T))
+                U = np.fliplr(U)
+            except:
+                U = np.eye(X.shape[0])
+            Y = (np.conjugate(U).T).dot(X)
+            Y = Y[:dims_to_keep, :]
+            X = Y / np.linalg.norm(Y, axis=0)[None, :]
+
+            Y = (np.conjugate(U).T).dot(Z)
+            Y = Y[:dims_to_keep, :]
+            Z = Y / np.linalg.norm(Y, axis=0)[None, :]            
+            return X, Z
+
+        total_dims_to_keep = proj_dim + 1
+
+        mode = projective_dim_red_mode
+        if mode == "direct":
+           _, ZRet = _one_step_linear_reduction(X, Z, total_dims_to_keep)
+           
+        elif mode == "exponential":
+            to_keep_this_iter = (n_dim - total_dims_to_keep) // 2
+            while to_keep_this_iter > 0:
+                X, Z = _one_step_linear_reduction(
+                    X, Z, total_dims_to_keep + to_keep_this_iter
+                )
+                to_keep_this_iter = to_keep_this_iter // 2
+            if X.shape[0] > total_dims_to_keep:
+                X, Z = _one_step_linear_reduction(X, Z, total_dims_to_keep)
+            ZRet = Z
+
+        elif mode == "one-by-one":
+            # Projective dimensionality reduction : Main Loop
+            ZRet = None
+            for i in range(n_dim - 1):
+                if i == n_dim - proj_dim - 1:
+                    ZRet = Z
+                try:
+                    _, U = np.linalg.eigh(X.dot(np.conjugate(X).T))
+                    U = np.fliplr(U)
+                    # U, _, _ = np.linalg.svd(X)
+                except:
+                    U = np.eye(X.shape[0])
+                Y = (np.conjugate(U).T).dot(X)
+                Y = Y[0:-1, :]
+                X = Y / np.linalg.norm(Y, axis=0)[None, :]
+
+                Y = (np.conjugate(U).T).dot(Z)
+                Y = Y[0:-1, :]
+                variance[-i - 1] = np.mean(
+                        (np.pi / 2 - np.real(np.arccos(np.abs(U[:, -1][None, :].dot(Z)))))
+                        ** 2
+                    )
+                Z = Y / np.linalg.norm(Y, axis=0)[None,:]
+            
+        # Return the variance and the projective coordinates
+        return {"variance": variance, "X": ZRet.T}
 
 class GeometryExamples:
     """
