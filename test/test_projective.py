@@ -57,7 +57,6 @@ class TestRealProjective:
         coords_query = pc.get_coordinates(X_query=X_query, distance_matrix_query=True)
         assert np.allclose(coords_query, coordinates[indices])
 
-
     def test_klein_bottle(self):
         """
         Test projective coordinates on the Klein bottle

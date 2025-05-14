@@ -795,6 +795,7 @@ class EquivariantPCA:
 
         # Return the variance and the projective coordinates
         return {"variance": variance, "X": XRet.T}
+        
     def ppca_query(og_class_map, query_class_map,  proj_dim, projective_dim_red_mode="one-by-one" , verbose=False):
         n_dim = og_class_map.shape[1]
        
