@@ -110,7 +110,7 @@ class ToroidalCoords(EMCoords):
 
         # compute partition of unity and choose a cover element for each data point
         varphi, ball_indx = EMCoords.get_covering_partition(self, r_cover, partunity_fn)
-
+        self.ball_indx = ball_indx
         # compute boundary matrix
         dist_land_land = self._dist_land_land
         delta0 = CohomologyUtils.make_delta0(
@@ -188,7 +188,7 @@ class ToroidalCoords(EMCoords):
             for cocycle in integer_cocycles_as_vectors
         ]
         harm_reps, _ = zip(*harm_reps_and_integrals)
-        self._harm_reps = harm_reps_and_integrals
+        self._harm_reps = np.asarray(harm_reps)
         # compute circular coordinates on data points
         circ_coords = [ 
             _sparse_integrate(
@@ -219,7 +219,8 @@ class ToroidalCoords(EMCoords):
             self._original_gram_matrix = gram_mat
             self._gram_matrix = decorrelated_vectors @ decorrelated_vectors.T
             self._change_basis = change_basis
-
+            
+            self._harm_reps = change_basis @ self._harm_reps
         return circ_coords
 
 
