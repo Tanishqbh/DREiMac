@@ -642,7 +642,7 @@ class CohomologyUtils:
             for j in range(i + 1, n_points):
                 if dist_mat[i, j] < threshold:
                     index = combinatorial_number_system_d1_forward(i, j, lookup_table)
-                    theta_matrix[i, j] = cocycle_as_vector[index]
+                    theta_matrix[i, j] = theta_matrix[j,i] = cocycle_as_vector[index]
         return theta_matrix
 
 
