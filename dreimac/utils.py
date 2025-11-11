@@ -643,7 +643,6 @@ class CohomologyUtils:
                 if dist_mat[i, j] < threshold:
                     index = combinatorial_number_system_d1_forward(i, j, lookup_table)
                     theta_matrix[i, j] = cocycle_as_vector[index]
-        #theta_sparse = csr_array(theta_matrix)
         return theta_matrix
 
 
