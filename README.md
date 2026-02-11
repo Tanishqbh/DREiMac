@@ -52,7 +52,7 @@ img = a3.imshow([[0,1]], cmap="twilight"); a3.set_visible(False)
 cb = plt.colorbar(mappable=img,ticks=[0,0.5,1]) ; _ = cb.ax.set_yticklabels(["0","$\pi$","2$\pi$"])
 ```
 
-![output](https://user-images.githubusercontent.com/1679929/232109124-bf2653e5-6f91-409d-b972-7104b96b3430.png)
+<img width="1099" height="316" alt="output" src="https://github.com/user-attachments/assets/e6203a87-7623-4d4e-9b4d-933e9dbd36e5" />
 
 ## More examples
 
