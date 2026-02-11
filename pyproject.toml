@@ -29,20 +29,6 @@ dependencies = [
   "scipy >=1.10",
 ]
 
-classifiers = [
-  "Intended Audience :: Science/Research",
-  "Intended Audience :: Education",
-  "Intended Audience :: Financial and Insurance Industry",
-  "Intended Audience :: Healthcare Industry",
-  "Topic :: Scientific/Engineering :: Information Analysis",
-  "Topic :: Scientific/Engineering :: Mathematics",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "License :: OSI Approved :: Apache Software License",
-]
-
 keywords = ["dimensionality reduction", "topological data analysis"]
 
 [project.optional-dependencies]
