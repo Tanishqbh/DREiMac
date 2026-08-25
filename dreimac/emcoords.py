@@ -74,7 +74,7 @@ class EMCoords(object):
             self._dist_land_data = res["dperm2all"]
         else:
             self._dist_land_data = X[self._idx_land,:]
-        self._coverage = np.max(np.min(self._dist_land_data, 1))
+        self._coverage = np.max(np.min(self._dist_land_data, 0))
         self._dist_land_land = self._dist_land_data[:, self._idx_land]
         self._cocycles = res["cocycles"]
         # Sort persistence diagrams in descending order of persistence
